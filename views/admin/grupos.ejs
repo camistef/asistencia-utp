@@ -1,0 +1,32 @@
+<%- include('../partials/head') %>
+
+<div class="titulo-acciones">
+  <h1>Grupos</h1>
+  <a class="btn btn-primario" href="/admin/grupos/nuevo">+ Nuevo grupo</a>
+</div>
+
+<div class="tabla-contenedor">
+<table class="tabla">
+  <thead><tr><th>Grupo</th><th>Carrera</th><th>Cuatrimestre</th><th>Alumnos</th><th></th></tr></thead>
+  <tbody>
+  <% if (!grupos.length) { %><tr><td colspan="5" class="vacio">No hay grupos registrados.</td></tr><% } %>
+  <% grupos.forEach(g => { %>
+    <tr>
+      <td><strong><%= g.nombre %></strong></td>
+      <td><%= g.carrera %></td>
+      <td><%= g.cuatrimestre %>°</td>
+      <td><%= g.total_alumnos %></td>
+      <td class="acciones-fila">
+        <a class="btn btn-sm" href="/admin/grupos/<%= g.id %>">Ver alumnos</a>
+        <a class="btn btn-sm" href="/admin/grupos/<%= g.id %>/editar">Editar</a>
+        <form method="post" action="/admin/grupos/<%= g.id %>/eliminar" data-confirmar="¿Eliminar el grupo <%= g.nombre %>? Solo es posible si no tiene sesiones ni asignaciones.">
+          <button class="btn btn-sm btn-peligro" type="submit">Eliminar</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+
+<%- include('../partials/foot') %>

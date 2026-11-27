@@ -1,0 +1,53 @@
+<%- include('../partials/head') %>
+
+<h1>Asignaciones docente · grupo · materia</h1>
+<p class="subtitulo">Un docente solo puede abrir sesiones de clase de las materias que tiene asignadas.</p>
+
+<form method="post" action="/admin/asignaciones" class="filtros tarjeta">
+  <div class="campo">
+    <label for="docente_id">Docente</label>
+    <select id="docente_id" name="docente_id" required>
+      <option value="">Selecciona…</option>
+      <% docentes.forEach(d => { %><option value="<%= d.id %>"><%= d.nombre %></option><% }) %>
+    </select>
+  </div>
+  <div class="campo">
+    <label for="grupo_id">Grupo</label>
+    <select id="grupo_id" name="grupo_id" required>
+      <option value="">Selecciona…</option>
+      <% grupos.forEach(g => { %><option value="<%= g.id %>"><%= g.nombre %></option><% }) %>
+    </select>
+  </div>
+  <div class="campo">
+    <label for="materia_id">Materia</label>
+    <select id="materia_id" name="materia_id" required>
+      <option value="">Selecciona…</option>
+      <% materias.forEach(m => { %><option value="<%= m.id %>"><%= m.clave %> · <%= m.nombre %></option><% }) %>
+    </select>
+  </div>
+  <div class="campo campo-boton"><button class="btn btn-primario" type="submit">Asignar</button></div>
+</form>
+
+<div class="tabla-contenedor">
+<table class="tabla">
+  <thead><tr><th>Docente</th><th>Grupo</th><th>Materia</th><th></th></tr></thead>
+  <tbody>
+  <% if (!asignaciones.length) { %><tr><td colspan="4" class="vacio">Aún no hay asignaciones.</td></tr><% } %>
+  <% asignaciones.forEach(a => { %>
+    <tr>
+      <td><%= a.docente %></td>
+      <td><%= a.grupo %></td>
+      <td><span class="mono"><%= a.clave %></span> · <%= a.materia %></td>
+      <td class="acciones-fila">
+        <form method="post" action="/admin/asignaciones/<%= a.id %>/eliminar"
+              data-confirmar="¿Quitar la asignación de <%= a.materia %> (<%= a.grupo %>) a <%= a.docente %>?">
+          <button class="btn btn-sm btn-peligro" type="submit">Quitar</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+
+<%- include('../partials/foot') %>

@@ -1,0 +1,36 @@
+<%- include('../partials/head') %>
+
+<h1>Panel del administrador</h1>
+
+<section class="metricas">
+  <a class="metrica" href="/admin/alumnos"><strong><%= conteos.alumnos %></strong><span>Alumnos activos</span></a>
+  <a class="metrica" href="/admin/grupos"><strong><%= conteos.grupos %></strong><span>Grupos</span></a>
+  <a class="metrica" href="/admin/materias"><strong><%= conteos.materias %></strong><span>Materias</span></a>
+  <a class="metrica" href="/admin/docentes"><strong><%= conteos.docentes %></strong><span>Docentes activos</span></a>
+  <div class="metrica"><strong><%= conteos.abiertas %></strong><span>Sesiones abiertas ahora</span></div>
+  <a class="metrica" href="/consulta"><strong><%= conteos.hoy %></strong><span>Asistencias hoy</span></a>
+</section>
+
+<section class="tarjeta">
+  <h2>Acciones rápidas</h2>
+  <div class="acciones">
+    <a class="btn btn-primario" href="/admin/alumnos/nuevo">+ Nuevo alumno</a>
+    <a class="btn" href="/admin/grupos/nuevo">+ Nuevo grupo</a>
+    <a class="btn" href="/admin/materias/nuevo">+ Nueva materia</a>
+    <a class="btn" href="/admin/docentes/nuevo">+ Nueva cuenta de docente</a>
+    <a class="btn" href="/admin/asignaciones">Asignar materias a docentes</a>
+    <a class="btn" href="/consulta">Consultar asistencia</a>
+  </div>
+</section>
+
+<section class="tarjeta">
+  <h2>Orden sugerido para dar de alta un cuatrimestre</h2>
+  <ol class="pasos">
+    <li>Crear los <a href="/admin/grupos">grupos</a> y las <a href="/admin/materias">materias</a>.</li>
+    <li>Crear las <a href="/admin/docentes">cuentas de docentes</a>.</li>
+    <li>Registrar a los <a href="/admin/alumnos">alumnos</a> con su matrícula y su tarjeta, y elegir su grupo.</li>
+    <li>En <a href="/admin/asignaciones">asignaciones</a>, indicar qué docente imparte cada materia en cada grupo.</li>
+  </ol>
+</section>
+
+<%- include('../partials/foot') %>

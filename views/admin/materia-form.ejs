@@ -1,0 +1,20 @@
+<%- include('../partials/head') %>
+
+<h1><%= titulo %></h1>
+
+<form method="post" action="/admin/materias<%= materia.id ? '/' + materia.id : '' %>" class="tarjeta formulario">
+  <label for="clave">Clave *</label>
+  <input type="text" id="clave" name="clave" value="<%= materia.clave %>" required maxlength="20"
+         placeholder="Ej. PRG-101" autofocus>
+
+  <label for="nombre">Nombre *</label>
+  <input type="text" id="nombre" name="nombre" value="<%= materia.nombre %>" required minlength="3" maxlength="100"
+         placeholder="Ej. Fundamentos de Programación">
+
+  <div class="acciones">
+    <button type="submit" class="btn btn-primario">Guardar</button>
+    <a href="/admin/materias" class="btn btn-claro">Cancelar</a>
+  </div>
+</form>
+
+<%- include('../partials/foot') %>

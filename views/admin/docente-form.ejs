@@ -1,0 +1,31 @@
+<%- include('../partials/head') %>
+
+<h1><%= titulo %></h1>
+
+<form method="post" action="/admin/docentes<%= cuenta.id ? '/' + cuenta.id : '' %>" class="tarjeta formulario" autocomplete="off">
+  <label for="nombre">Nombre completo *</label>
+  <input type="text" id="nombre" name="nombre" value="<%= cuenta.nombre %>" required minlength="3" maxlength="100" autofocus>
+
+  <label for="usuario">Usuario para iniciar sesión *</label>
+  <input type="text" id="usuario" name="usuario" value="<%= cuenta.usuario %>" required maxlength="50"
+         pattern="[a-z0-9._\-]{3,50}" placeholder="Ej. jperez">
+  <small class="ayuda">Minúsculas, números, punto, guion o guion bajo.</small>
+
+  <label for="rol">Rol *</label>
+  <select id="rol" name="rol">
+    <option value="docente" <%= cuenta.rol === 'docente' ? 'selected' : '' %>>Docente</option>
+    <option value="admin" <%= cuenta.rol === 'admin' ? 'selected' : '' %>>Administrador</option>
+  </select>
+
+  <label for="password"><%= cuenta.id ? 'Nueva contraseña (déjala vacía para no cambiarla)' : 'Contraseña *' %></label>
+  <input type="password" id="password" name="password" minlength="8" maxlength="72"
+         autocomplete="new-password" <%= cuenta.id ? '' : 'required' %>>
+  <small class="ayuda">Mínimo 8 caracteres. Se guarda cifrada (bcrypt), nunca en texto plano.</small>
+
+  <div class="acciones">
+    <button type="submit" class="btn btn-primario">Guardar</button>
+    <a href="/admin/docentes" class="btn btn-claro">Cancelar</a>
+  </div>
+</form>
+
+<%- include('../partials/foot') %>

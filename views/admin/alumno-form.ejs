@@ -1,0 +1,45 @@
+<%- include('../partials/head') %>
+
+<h1><%= titulo %></h1>
+
+<form method="post" action="/admin/alumnos<%= alumno.id ? '/' + alumno.id : '' %>" class="tarjeta formulario">
+  <label for="matricula">Matrícula *</label>
+  <input type="text" id="matricula" name="matricula" value="<%= alumno.matricula %>" required
+         maxlength="20" pattern="[A-Za-z0-9\-]{4,20}" placeholder="Ej. 2026TI001" autofocus>
+
+  <label for="nombre">Nombre completo *</label>
+  <input type="text" id="nombre" name="nombre" value="<%= alumno.nombre %>" required minlength="3" maxlength="120">
+
+  <label for="id_tarjeta">ID de tarjeta</label>
+  <input type="text" id="id_tarjeta" name="id_tarjeta" value="<%= alumno.id_tarjeta || '' %>"
+         maxlength="64" pattern="[A-Za-z0-9:\-]{1,64}" placeholder="Haz clic aquí y pasa la tarjeta por el lector">
+  <small class="ayuda">Haz clic en el campo y pasa la tarjeta: el lector escribe el identificador.
+    Puede quedar vacío si el alumno aún no tiene tarjeta (usará captura manual de matrícula).</small>
+
+  <fieldset>
+    <legend>Grupo(s)</legend>
+    <% if (!grupos.length) { %><p class="nota">Primero crea un grupo.</p><% } %>
+    <div class="opciones-check">
+    <% grupos.forEach(g => { %>
+      <label class="check">
+        <input type="checkbox" name="grupos" value="<%= g.id %>" <%= gruposAlumno.includes(g.id) ? 'checked' : '' %>>
+        <%= g.nombre %>
+      </label>
+    <% }) %>
+    </div>
+  </fieldset>
+
+  <div class="acciones">
+    <button type="submit" class="btn btn-primario">Guardar</button>
+    <a href="/admin/alumnos" class="btn btn-claro">Cancelar</a>
+  </div>
+</form>
+
+<script>
+  // Evita que el Enter que envía el lector guarde el formulario sin querer
+  document.getElementById('id_tarjeta').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); this.blur(); }
+  });
+</script>
+
+<%- include('../partials/foot') %>

@@ -1,0 +1,119 @@
+<%- include('partials/head') %>
+
+<h1>Consulta de asistencia</h1>
+
+<form method="get" action="/consulta" class="filtros tarjeta">
+  <div class="campo">
+    <label for="grupo">Grupo</label>
+    <select id="grupo" name="grupo">
+      <option value="">Todos</option>
+      <% opciones.grupos.forEach(g => { %>
+        <option value="<%= g.id %>" <%= filtros.grupo === g.id ? 'selected' : '' %>><%= g.nombre %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="campo">
+    <label for="materia">Materia</label>
+    <select id="materia" name="materia">
+      <option value="">Todas</option>
+      <% opciones.materias.forEach(m => { %>
+        <option value="<%= m.id %>" <%= filtros.materia === m.id ? 'selected' : '' %>><%= m.nombre %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="campo">
+    <label for="alumno">Alumno</label>
+    <input type="search" id="alumno" name="alumno" value="<%= filtros.alumno %>" placeholder="Matrícula o nombre" maxlength="120">
+  </div>
+  <div class="campo">
+    <label for="desde">Desde</label>
+    <input type="date" id="desde" name="desde" value="<%= filtros.desde || '' %>">
+  </div>
+  <div class="campo">
+    <label for="hasta">Hasta</label>
+    <input type="date" id="hasta" name="hasta" value="<%= filtros.hasta || '' %>">
+  </div>
+  <input type="hidden" name="vista" value="<%= vista %>">
+  <div class="campo campo-boton">
+    <button class="btn btn-primario" type="submit">Consultar</button>
+    <a class="btn btn-claro" href="/consulta">Limpiar</a>
+  </div>
+</form>
+
+<section class="metricas">
+  <div class="metrica"><strong><%= totales.alumnos %></strong><span>Alumnos</span></div>
+  <div class="metrica"><strong><%= totales.asistencias %></strong><span>Asistencias</span></div>
+  <div class="metrica"><strong><%= totales.faltas %></strong><span>Faltas</span></div>
+  <div class="metrica"><strong><%= totales.porcentaje %>%</strong><span>Asistencia global</span></div>
+</section>
+
+<div class="titulo-acciones">
+  <div class="modos">
+    <a class="modo <%= vista === 'resumen' ? 'activo' : '' %>" href="/consulta?<%= qs %>">Resumen por alumno</a>
+    <a class="modo <%= vista === 'detalle' ? 'activo' : '' %>" href="/consulta?<%= qs %><%= qs ? '&' : '' %>vista=detalle">Detalle por sesión</a>
+  </div>
+  <div class="acciones">
+    <a class="btn" href="/reportes/pdf?<%= qs %>">Exportar PDF</a>
+    <a class="btn" href="/reportes/excel?<%= qs %>">Exportar Excel</a>
+  </div>
+</div>
+
+<% if (vista === 'resumen') { %>
+<div class="tabla-contenedor">
+<table class="tabla">
+  <thead>
+    <tr><th>Matrícula</th><th>Alumno</th><th>Grupo</th><th>Materia</th>
+        <th class="num">Sesiones</th><th class="num">Asistencias</th><th class="num">Faltas</th><th>% Asistencia</th></tr>
+  </thead>
+  <tbody>
+  <% if (!filasResumen.length) { %><tr><td colspan="8" class="vacio">No hay registros con estos filtros.</td></tr><% } %>
+  <% filasResumen.forEach(f => { %>
+    <tr>
+      <td class="mono"><%= f.matricula %></td>
+      <td><%= f.alumno %></td>
+      <td><%= f.grupo %></td>
+      <td><%= f.materia %></td>
+      <td class="num"><%= f.sesiones %></td>
+      <td class="num"><%= f.asistencias %></td>
+      <td class="num"><%= f.faltas %></td>
+      <td>
+        <div class="barra-pct <%= f.porcentaje < 80 ? 'bajo' : '' %>" title="<%= f.porcentaje %>%">
+          <span style="width: <%= f.porcentaje %>%"></span>
+        </div>
+        <strong class="<%= f.porcentaje < 80 ? 'texto-error' : '' %>"><%= f.porcentaje %>%</strong>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+<p class="nota">Porcentaje = asistencias ÷ sesiones de la materia en el rango. En rojo: menos de 80 %.</p>
+<% } else { %>
+<div class="tabla-contenedor">
+<table class="tabla tabla-compacta">
+  <thead>
+    <tr><th>Fecha</th><th>Clase</th><th>Grupo</th><th>Materia</th><th>Matrícula</th><th>Alumno</th><th>Estado</th><th>Registro</th></tr>
+  </thead>
+  <tbody>
+  <% if (!filasDetalle.length) { %><tr><td colspan="8" class="vacio">No hay registros con estos filtros.</td></tr><% } %>
+  <% filasDetalle.forEach(f => { %>
+    <tr class="<%= f.estado === 'Falta' ? 'fila-falta' : '' %>">
+      <td><%= f.fecha %></td>
+      <td><%= String(f.hora_clase).slice(0, 5) %></td>
+      <td><%= f.grupo %></td>
+      <td><%= f.materia %></td>
+      <td class="mono"><%= f.matricula %></td>
+      <td><%= f.alumno %></td>
+      <td><span class="pastilla <%= f.estado === 'Falta' ? 'pastilla-error' : 'pastilla-ok' %>"><%= f.estado %></span></td>
+      <td><%= f.hora_registro ? f.hora_registro + (f.metodo === 'manual' ? ' (manual)' : '') : '—' %></td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+<% if (filasDetalle.length >= 1000) { %>
+  <p class="nota">Se muestran los primeros 1000 registros. Usa filtros o exporta a Excel para verlos todos.</p>
+<% } %>
+<% } %>
+
+<%- include('partials/foot') %>

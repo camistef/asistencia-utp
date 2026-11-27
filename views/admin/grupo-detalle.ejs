@@ -1,0 +1,39 @@
+<%- include('../partials/head') %>
+
+<div class="titulo-acciones">
+  <h1>Grupo <%= grupo.nombre %></h1>
+  <a class="btn btn-claro" href="/admin/grupos">← Volver a grupos</a>
+</div>
+<p class="subtitulo"><%= grupo.carrera %> · <%= grupo.cuatrimestre %>° cuatrimestre · <%= alumnos.length %> alumno(s)</p>
+
+<form method="post" action="/admin/grupos/<%= grupo.id %>/alumnos" class="filtros">
+  <div class="campo">
+    <label for="matricula">Agregar alumno por matrícula</label>
+    <input type="text" id="matricula" name="matricula" required maxlength="20" placeholder="Ej. 2026TI001">
+  </div>
+  <div class="campo campo-boton"><button class="btn btn-primario" type="submit">Agregar</button></div>
+</form>
+
+<div class="tabla-contenedor">
+<table class="tabla">
+  <thead><tr><th>Matrícula</th><th>Nombre</th><th>Tarjeta</th><th></th></tr></thead>
+  <tbody>
+  <% if (!alumnos.length) { %><tr><td colspan="4" class="vacio">El grupo no tiene alumnos.</td></tr><% } %>
+  <% alumnos.forEach(a => { %>
+    <tr class="<%= a.activo ? '' : 'inactivo' %>">
+      <td class="mono"><%= a.matricula %></td>
+      <td><%= a.nombre %> <%= a.activo ? '' : '(baja)' %></td>
+      <td class="mono"><%= a.id_tarjeta || '—' %></td>
+      <td class="acciones-fila">
+        <form method="post" action="/admin/grupos/<%= grupo.id %>/alumnos/<%= a.id %>/quitar"
+              data-confirmar="¿Quitar a <%= a.nombre %> del grupo?">
+          <button class="btn btn-sm btn-claro" type="submit">Quitar del grupo</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+
+<%- include('../partials/foot') %>

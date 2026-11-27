@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= typeof titulo !== 'undefined' ? titulo + ' · ' : '' %>Asistencia UTP</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231e3a5f'/><path d='M9 17l5 5 9-11' stroke='white' stroke-width='3' fill='none'/></svg>">
+</head>
+<body class="<%= typeof claseBody !== 'undefined' ? claseBody : '' %>">
+<% if (usuario) { %>
+<header class="barra">
+  <a href="/" class="marca">
+    <span class="marca-icono" aria-hidden="true">✓</span> Asistencia UTP
+  </a>
+  <%
+    // Opciones del menú según el rol. "exacto" = solo se resalta en esa ruta exacta.
+    const opciones = usuario.rol === 'admin'
+      ? [['/admin', 'Inicio', true], ['/admin/alumnos', 'Alumnos'], ['/admin/grupos', 'Grupos'],
+         ['/admin/materias', 'Materias'], ['/admin/docentes', 'Docentes'], ['/admin/asignaciones', 'Asignaciones']]
+      : [['/docente', 'Mis clases']];
+    opciones.push(['/consulta', 'Consulta']);
+  %>
+  <nav class="menu">
+    <% opciones.forEach(([href, texto, exacto]) => {
+         const activo = exacto ? ruta === href : ruta.startsWith(href); %>
+      <a href="<%= href %>" class="<%= activo ? 'activo' : '' %>"><%= texto %></a>
+    <% }) %>
+  </nav>
+  <div class="cuenta">
+    <span class="cuenta-nombre" title="<%= usuario.usuario %>"><%= usuario.nombre %>
+      <small>(<%= usuario.rol === 'admin' ? 'Administrador' : 'Docente' %>)</small></span>
+    <form method="post" action="/logout">
+      <button type="submit" class="btn btn-sm btn-claro">Salir</button>
+    </form>
+  </div>
+</header>
+<% } %>
+<main class="contenedor">
+<% if (flash) { %>
+  <div class="alerta alerta-<%= flash.tipo %>" role="alert"><%= flash.mensaje %></div>
+<% } %>

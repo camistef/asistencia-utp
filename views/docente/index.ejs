@@ -1,0 +1,64 @@
+<%- include('../partials/head') %>
+
+<h1>Mis clases</h1>
+
+<% if (abierta) { %>
+  <section class="banner-abierta">
+    <div>
+      <strong>Tienes una sesión abierta:</strong>
+      <%= abierta.grupo %> · <%= abierta.materia %> (desde <%= abierta.fecha_inicio.slice(11, 16) %>)
+    </div>
+    <div class="acciones">
+      <a class="btn btn-primario" href="/docente/sesiones/<%= abierta.id %>/registro">Ir al registro</a>
+      <form method="post" action="/docente/sesiones/<%= abierta.id %>/cerrar" data-confirmar="¿Cerrar la sesión de clase?">
+        <button class="btn btn-claro" type="submit">Cerrar sesión de clase</button>
+      </form>
+    </div>
+  </section>
+<% } %>
+
+<section class="tarjeta">
+  <h2>Abrir sesión de clase</h2>
+  <% if (!asignaciones.length) { %>
+    <p class="nota">No tienes materias asignadas. Pide al administrador que te asigne tus grupos y materias.</p>
+  <% } else { %>
+  <div class="rejilla-clases">
+    <% asignaciones.forEach(a => { %>
+      <form method="post" action="/docente/sesiones" class="clase">
+        <input type="hidden" name="asignacion_id" value="<%= a.id %>">
+        <div class="clase-grupo"><%= a.grupo %></div>
+        <div class="clase-materia"><%= a.materia %></div>
+        <div class="clase-info"><span class="mono"><%= a.clave %></span> · <%= a.total_alumnos %> alumnos</div>
+        <button type="submit" class="btn btn-primario btn-bloque" <%= abierta ? 'disabled' : '' %>>
+          Abrir sesión
+        </button>
+      </form>
+    <% }) %>
+  </div>
+  <% } %>
+</section>
+
+<section class="tarjeta">
+  <h2>Sesiones recientes</h2>
+  <div class="tabla-contenedor">
+  <table class="tabla">
+    <thead><tr><th>Fecha</th><th>Horario</th><th>Grupo</th><th>Materia</th><th>Asistencia</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+    <% if (!recientes.length) { %><tr><td colspan="7" class="vacio">Aún no has abierto sesiones.</td></tr><% } %>
+    <% recientes.forEach(s => { %>
+      <tr>
+        <td><%= s.fecha_inicio.slice(0, 10) %></td>
+        <td><%= s.fecha_inicio.slice(11, 16) %> – <%= s.fecha_fin ? s.fecha_fin.slice(11, 16) : '…' %></td>
+        <td><%= s.grupo %></td>
+        <td><%= s.materia %></td>
+        <td><%= s.presentes %> / <%= s.total %></td>
+        <td><span class="pastilla <%= s.estado === 'abierta' ? 'pastilla-ok' : 'pastilla-gris' %>"><%= s.estado %></span></td>
+        <td><a class="btn btn-sm" href="/docente/sesiones/<%= s.id %>/registro">Ver</a></td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<%- include('../partials/foot') %>

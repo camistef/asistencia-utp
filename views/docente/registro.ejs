@@ -1,0 +1,86 @@
+<%- include('../partials/head') %>
+<%
+  const presentes = lista.filter(l => l.hora).length;
+  const abierta = sesion.estado === 'abierta';
+%>
+
+<div class="titulo-acciones">
+  <div>
+    <h1><%= sesion.grupo %> · <%= sesion.materia %></h1>
+    <p class="subtitulo">
+      <%= sesion.fecha_inicio.slice(0, 10) %> · inicio <%= sesion.fecha_inicio.slice(11, 16) %>
+      <% if (!abierta && sesion.fecha_fin) { %> · cierre <%= sesion.fecha_fin.slice(11, 16) %><% } %>
+      · <span class="pastilla <%= abierta ? 'pastilla-ok' : 'pastilla-gris' %>"><%= sesion.estado %></span>
+    </p>
+  </div>
+  <div class="acciones">
+    <a class="btn btn-claro" href="/docente">← Mis clases</a>
+    <% if (abierta) { %>
+    <form method="post" action="/docente/sesiones/<%= sesion.id %>/cerrar" data-confirmar="¿Cerrar la sesión? Ya no se podrán registrar asistencias.">
+      <button class="btn btn-peligro" type="submit">Cerrar sesión de clase</button>
+    </form>
+    <% } %>
+  </div>
+</div>
+
+<div class="registro" id="registro" data-sesion="<%= sesion.id %>" data-abierta="<%= abierta ? '1' : '0' %>">
+
+  <section class="registro-captura">
+    <% if (abierta) { %>
+    <!-- Panel grande con el resultado de la última lectura -->
+    <div id="panel" class="panel panel-espera" aria-live="assertive">
+      <div class="panel-icono" id="panel-icono">⌁</div>
+      <div class="panel-titulo" id="panel-titulo">Acerca o pasa tu tarjeta</div>
+      <div class="panel-nombre" id="panel-nombre">&nbsp;</div>
+      <div class="panel-matricula" id="panel-matricula">&nbsp;</div>
+      <div class="panel-tiempo" id="panel-tiempo">&nbsp;</div>
+    </div>
+
+    <div class="modos" role="tablist">
+      <button type="button" class="modo activo" data-modo="tarjeta" role="tab">Lector de tarjeta</button>
+      <button type="button" class="modo" data-modo="manual" role="tab">Captura manual</button>
+    </div>
+
+    <!-- El lector actúa como teclado: escribe el código en este campo y envía Enter -->
+    <form id="form-lectura" class="form-lectura" autocomplete="off">
+      <label for="codigo" id="etiqueta-codigo">Lectura de tarjeta</label>
+      <input type="text" id="codigo" name="codigo" maxlength="64" autofocus
+             placeholder="Esperando lectura…" spellcheck="false" autocapitalize="characters">
+      <button type="submit" class="btn btn-primario" id="btn-enviar">Registrar</button>
+    </form>
+    <p class="nota" id="ayuda-modo">El campo se mantiene activo para el lector. Si el lector falla, usa "Captura manual".</p>
+
+    <label class="check">
+      <input type="checkbox" id="sonido" checked> Sonido al registrar
+    </label>
+    <% } else { %>
+      <div class="panel panel-gris">
+        <div class="panel-titulo">Sesión cerrada</div>
+        <div class="panel-matricula">Ya no se pueden registrar asistencias en esta sesión.</div>
+      </div>
+    <% } %>
+  </section>
+
+  <section class="registro-lista">
+    <div class="contador">
+      <strong id="cont-presentes"><%= presentes %></strong> de <span id="cont-total"><%= lista.length %></span> presentes
+    </div>
+    <div class="tabla-contenedor">
+    <table class="tabla tabla-compacta">
+      <thead><tr><th>Alumno</th><th>Matrícula</th><th>Hora</th></tr></thead>
+      <tbody id="lista">
+      <% lista.forEach(l => { %>
+        <tr class="<%= l.hora ? 'presente' : 'pendiente' %>">
+          <td><%= l.nombre %></td>
+          <td class="mono"><%= l.matricula %></td>
+          <td><%= l.hora ? l.hora + (l.metodo === 'manual' ? ' (manual)' : '') : '—' %></td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table>
+    </div>
+  </section>
+</div>
+
+<% if (abierta) { %><script src="/js/registro.js"></script><% } %>
+<%- include('../partials/foot') %>

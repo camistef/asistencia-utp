@@ -1,0 +1,56 @@
+<%- include('../partials/head') %>
+
+<div class="titulo-acciones">
+  <h1>Alumnos</h1>
+  <a class="btn btn-primario" href="/admin/alumnos/nuevo">+ Nuevo alumno</a>
+</div>
+
+<form method="get" action="/admin/alumnos" class="filtros">
+  <div class="campo">
+    <label for="q">Buscar</label>
+    <input type="search" id="q" name="q" value="<%= q %>" placeholder="Matrícula, nombre o tarjeta" maxlength="64">
+  </div>
+  <div class="campo">
+    <label for="grupo">Grupo</label>
+    <select id="grupo" name="grupo">
+      <option value="">Todos</option>
+      <% grupos.forEach(g => { %>
+        <option value="<%= g.id %>" <%= grupoId === g.id ? 'selected' : '' %>><%= g.nombre %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="campo campo-boton">
+    <button class="btn" type="submit">Filtrar</button>
+  </div>
+</form>
+
+<div class="tabla-contenedor">
+<table class="tabla">
+  <thead>
+    <tr><th>Matrícula</th><th>Nombre</th><th>Tarjeta</th><th>Grupo(s)</th><th>Estado</th><th></th></tr>
+  </thead>
+  <tbody>
+  <% if (!alumnos.length) { %>
+    <tr><td colspan="6" class="vacio">No se encontraron alumnos.</td></tr>
+  <% } %>
+  <% alumnos.forEach(a => { %>
+    <tr class="<%= a.activo ? '' : 'inactivo' %>">
+      <td class="mono"><%= a.matricula %></td>
+      <td><%= a.nombre %></td>
+      <td class="mono"><%= a.id_tarjeta || '—' %></td>
+      <td><%= a.grupos || 'Sin grupo' %></td>
+      <td><span class="pastilla <%= a.activo ? 'pastilla-ok' : 'pastilla-gris' %>"><%= a.activo ? 'Activo' : 'Baja' %></span></td>
+      <td class="acciones-fila">
+        <a class="btn btn-sm" href="/admin/alumnos/<%= a.id %>/editar">Editar</a>
+        <form method="post" action="/admin/alumnos/<%= a.id %>/estado">
+          <button class="btn btn-sm btn-claro" type="submit"><%= a.activo ? 'Dar de baja' : 'Reactivar' %></button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+<p class="nota">Los alumnos no se eliminan para conservar su historial de asistencia; se dan de baja.</p>
+
+<%- include('../partials/foot') %>

@@ -1,0 +1,30 @@
+<%- include('../partials/head') %>
+
+<div class="titulo-acciones">
+  <h1>Materias</h1>
+  <a class="btn btn-primario" href="/admin/materias/nuevo">+ Nueva materia</a>
+</div>
+
+<div class="tabla-contenedor">
+<table class="tabla">
+  <thead><tr><th>Clave</th><th>Nombre</th><th></th></tr></thead>
+  <tbody>
+  <% if (!materias.length) { %><tr><td colspan="3" class="vacio">No hay materias registradas.</td></tr><% } %>
+  <% materias.forEach(m => { %>
+    <tr>
+      <td class="mono"><%= m.clave %></td>
+      <td><%= m.nombre %></td>
+      <td class="acciones-fila">
+        <a class="btn btn-sm" href="/admin/materias/<%= m.id %>/editar">Editar</a>
+        <form method="post" action="/admin/materias/<%= m.id %>/eliminar"
+              data-confirmar="¿Eliminar la materia <%= m.nombre %>? Solo es posible si no tiene sesiones ni asignaciones.">
+          <button class="btn btn-sm btn-peligro" type="submit">Eliminar</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+
+<%- include('../partials/foot') %>
