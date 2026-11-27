@@ -1,0 +1,31 @@
+{
+  "name": "asistencia-utp",
+  "version": "1.0.0",
+  "description": "Sistema web de registro de asistencia con tarjeta universitaria - Universidad Tecnológica de Parras (proyecto escolar)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "db:init": "node scripts/init-db.js",
+    "backup": "node scripts/backup.js",
+    "hash": "node scripts/hash-password.js"
+  },
+  "keywords": ["asistencia", "nfc", "utp", "express", "mysql"],
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "mysql2": "^3.11.3",
+    "pdfkit": "^0.15.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

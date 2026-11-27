@@ -1,0 +1,16 @@
+# Dependencias
+node_modules/
+
+# Credenciales (NUNCA subir el .env real)
+.env
+
+# Respaldos de la base de datos (pueden contener datos de alumnos)
+backups/*.sql
+
+# Logs y archivos del sistema
+npm-debug.log*
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
